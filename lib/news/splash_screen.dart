@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:vartha_news/news/screens/news_page.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     try {
       // Navigate to NewsPage and remove SplashScreen from navigation stack
-
+      Get.to(NewsPage());
     } catch (e) {
       // Handle any unexpected error during navigation
       print('Error navigating to NewsPage: $e');

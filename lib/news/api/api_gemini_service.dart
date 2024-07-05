@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 Future<String> summarizeNews(String url) async {
   try {
     const String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"; // Replace with your Gemini API URL
-    const String apiKey = "xxx"; // Replace with your Gemini API Key
+    const String apiKey = "AIzaSyBwPdVnWEHK7RC2bTIefTg8NH8IkxG3nzE"; // Replace with your Gemini API Key
 
     // Prepare request body
     Map<String, dynamic> requestBody = {

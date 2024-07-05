@@ -1,17 +1,23 @@
+// Combined Controller for Categories and News
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../api/api_provider.dart';
-import '../data/model/newsitem.dart';
+import '../data/model/category.dart';
+import '../data/model/news.dart';
 
-class NewsController extends GetxController with StateMixin<List<NewsItem>> {
-
+class NewsController extends GetxController {
   final ApiProvider apiProvider;
+
+  var categories = <Category>[].obs;
+  var newsList = <News>[].obs;
+  var status = RxStatus.loading().obs;
 
   NewsController({required this.apiProvider});
 
   @override
   void onInit() {
     super.onInit();
+    fetchCategories();
     fetchPosts(null);
   }
 
@@ -21,12 +27,13 @@ class NewsController extends GetxController with StateMixin<List<NewsItem>> {
       "summary": summary,
     };
     apiProvider.updateNewsItem(map).then((response) {
-      debugPrint('URL:${response.request?.url}');
-      debugPrint('bodyString:${response.bodyString}');
-      List<NewsItem>? data = newsModelFromJson(response.bodyString ?? '');
-      change(data, status: RxStatus.success());
+      debugPrint('URL: ${response.request?.url}');
+      debugPrint('bodyString: ${response.bodyString}');
+      List<News>? data = newsModelFromJson(response.bodyString ?? '');
+      newsList.value = data;
+      status.value = RxStatus.success();
     }, onError: (err) {
-      change(null, status: RxStatus.error(err.toString()));
+      status.value = RxStatus.error(err.toString());
     });
   }
 
@@ -36,12 +43,25 @@ class NewsController extends GetxController with StateMixin<List<NewsItem>> {
         : apiProvider.getNewsByCategory(category);
 
     fetch.then((response) {
-      debugPrint('URL:${response.request?.url}');
-      debugPrint('bodyString:${response.bodyString}');
-      List<NewsItem>? data = newsModelFromJson(response.bodyString ?? '');
-      change(data, status: RxStatus.success());
+      debugPrint('URL: ${response.request?.url}');
+      debugPrint('bodyString: ${response.bodyString}');
+      List<News>? data = newsModelFromJson(response.bodyString ?? '');
+      newsList.value = data;
+      status.value = RxStatus.success();
     }, onError: (err) {
-      change(null, status: RxStatus.error(err.toString()));
+      status.value = RxStatus.error(err.toString());
+    });
+  }
+
+  void fetchCategories() {
+    apiProvider.getCategories().then((response) {
+      debugPrint('URL: ${response.request?.url}');
+      debugPrint('bodyString: ${response.bodyString}');
+      List<Category> data = Category.listFromJson(response.body);
+      categories.value = data;
+      status.value = RxStatus.success();
+    }, onError: (err) {
+      status.value = RxStatus.error(err.toString());
     });
   }
 }

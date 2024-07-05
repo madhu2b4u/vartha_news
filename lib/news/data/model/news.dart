@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../../api/news_service.dart';
+import '../../api/api_gemini_service.dart';
 
 /// loc : "https://www.rnz.co.nz/news/national/519752/search-on-for-67-year-old-woman-missing-in-waikato-bush"
 /// source : "RNZ"
@@ -9,12 +9,12 @@ import '../../api/news_service.dart';
 /// caption : ""
 /// category : "nz-news"
 
-List<NewsItem> newsModelFromJson(String str) => List<NewsItem>.from(json.decode(str).map((x) => NewsItem.fromJson(x)));
+List<News> newsModelFromJson(String str) => List<News>.from(json.decode(str).map((x) => News.fromJson(x)));
 
-String newsModelToJson(List<NewsItem> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String newsModelToJson(List<News> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 
-class NewsItem {
+class News {
   String? loc;
   String? source;
   String? publicationDate;
@@ -25,7 +25,7 @@ class NewsItem {
   String? id;
   String? summary; // Added field for summary
 
-  NewsItem({
+  News({
     this.loc,
     this.source,
     this.publicationDate,
@@ -35,7 +35,15 @@ class NewsItem {
     this.category,
     this.id,
     this.summary,
-  });
+  }){
+    // Sanitize images URLs
+    images = images?.map((url) => sanitizeUrl(url)).toList();
+  }
+
+  // Method to sanitize URLs
+  String sanitizeUrl(String url) {
+    return url.replaceAll('&amp;', '&');
+  }
 
   // Method to fetch summary asynchronously
   Future<String?> fetchSummary() async {
@@ -54,7 +62,7 @@ class NewsItem {
     }
   }
 
-  NewsItem.fromJson(dynamic json) {
+  News.fromJson(dynamic json) {
     loc = json['loc'];
     source = json['source'];
     publicationDate = json['publicationDate'];

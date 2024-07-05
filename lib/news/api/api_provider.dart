@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'base_get_connect.dart';
+import 'api_network.dart';
 
 class ApiProvider extends BaseGetConnect {
 
@@ -8,7 +8,7 @@ class ApiProvider extends BaseGetConnect {
       get<dynamic>('parsedNews');
 
   Future<Response<dynamic>> getNewsByCategory(String category) =>
-      get<dynamic>('parsedNews/fetchCategory?category=$category}');
+      get<dynamic>('parsedNews/fetchCategory?category=$category');
 
   Future<Response<dynamic>> updateNewsItem(Map<String, String> data) =>
       put<dynamic>('parsedNews/${data["id"]}', data);
